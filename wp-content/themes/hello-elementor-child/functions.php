@@ -240,3 +240,6 @@ function get_tf_event($data)
 
     return $startingList;
 }
+
+// Disable email notifications for password reset
+remove_action('after_password_reset', 'wp_password_change_notification');
