@@ -1,0 +1,56 @@
+# Tatrafest Import Orders Plugin - .gitignore
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+*.sublime-project
+*.sublime-workspace
+
+# OS generated files
+Thumbs.db
+.DS_Store
+
+# Composer
+vendor/
+composer.lock
+
+# Node modules
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Build and temp files
+dist/
+build/
+temp/
+tmp/
+
+# Cache files
+*.cache
+.cache/
+
+# Log files
+*.log
+logs/
+
+# Testing
+coverage/
+.phpunit.cache/
+
+# Development
+.env.local
+.env.*.local
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Keep documentation files
+!*.md
+!README.md
+!LICENSE

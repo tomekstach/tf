@@ -1,0 +1,139 @@
+/* Tatrafest Import Orders - Admin Styles */
+
+.tatrafest-import-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-top: 20px;
+}
+
+.tatrafest-import-form-wrapper {
+    background: #fff;
+    padding: 25px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.tatrafest-import-form-wrapper h2 {
+    margin-top: 0;
+    color: #23282d;
+    font-size: 1.3em;
+}
+
+.tatrafest-import-form-wrapper p {
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.tatrafest-import-form-wrapper code {
+    background: #f1f1f1;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+}
+
+.tatrafest-import-form {
+    background: #fafafa;
+    padding: 20px;
+    border: 1px solid #e5e5e5;
+    border-radius: 4px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group:last-child {
+    margin-bottom: 0;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #23282d;
+}
+
+.form-group input[type="text"] {
+    width: 100%;
+    max-width: 300px;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.form-group input[type="text"]:focus {
+    border-color: #0073aa;
+    box-shadow: 0 0 0 2px rgba(0, 115, 170, 0.1);
+    outline: none;
+}
+
+.tatrafest-import-form button {
+    margin-right: 10px;
+}
+
+.tatrafest-import-form .spinner {
+    display: inline-block;
+    margin-left: 10px;
+}
+
+.tatrafest-import-info {
+    background: #fff;
+    padding: 25px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+.tatrafest-import-info h3 {
+    margin-top: 0;
+    color: #23282d;
+    font-size: 1.1em;
+}
+
+.tatrafest-import-info ul {
+    margin: 15px 0;
+    padding-left: 20px;
+}
+
+.tatrafest-import-info li {
+    margin-bottom: 8px;
+    color: #666;
+    line-height: 1.6;
+}
+
+.tatrafest-import-info li strong {
+    color: #23282d;
+}
+
+#tatrafest-import-message {
+    margin-top: 20px;
+    padding: 12px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+#tatrafest-import-message.notice-success {
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+    color: #155724;
+}
+
+#tatrafest-import-message.notice-error {
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .tatrafest-import-container {
+        grid-template-columns: 1fr;
+    }
+
+    .form-group input[type="text"] {
+        max-width: 100%;
+    }
+}
