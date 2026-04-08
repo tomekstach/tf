@@ -5,7 +5,7 @@
  * @package HelloElementor
  */
 
-if (! defined('ABSPATH')) {
+if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
@@ -25,9 +25,9 @@ function custom_update_order($order_id)
     }
 
     // Get distances from the database
-    $distances = $wpdb->get_results("SELECT distance.*, event_distance.ordering FROM tf_starting_distances AS distance LEFT JOIN tf_starting_events_distances AS event_distance ON event_distance.distanceID = distance.distanceID WHERE event_distance.eventID IN (" . implode(',', $eventsIDs) . ") ORDER BY event_distance.ordering ASC");
+    $distances = $wpdb->get_results("SELECT distance.*, event_distance.ordering, event_distance.variantID FROM tf_starting_distances AS distance LEFT JOIN tf_starting_events_distances AS event_distance ON event_distance.distanceID = distance.distanceID WHERE event_distance.eventID IN (" . implode(',', $eventsIDs) . ") ORDER BY event_distance.ordering ASC");
 
-    $order  = wc_get_order($order_id);
+    $order = wc_get_order($order_id);
     $status = $order->get_status();
 
     // Remove starting list for given orderNumber
@@ -45,27 +45,25 @@ function custom_update_order($order_id)
 
     $startingList = [];
     foreach ($order->get_items() as $item_id => $item) {
-        $product    = $item->get_product();
-        $productID  = $product->get_parent_id();
+        $product = $item->get_product();
+        $productID = $product->get_parent_id();
+        $variantID = $product->get_id();
         $attributes = $product->get_attributes();
 
 //         if ($attributes['typ'] === 'Bez kategorii') {
 
-        $distance = searchForValue($attributes['dystans'], 'name', $distances);
-        if ($distance == null or $distance == '') {
-            $distance = searchForValue($attributes['rodzaj'], 'name', $distances);
-        }
+        $distance = searchForValue($variantID, 'variantID', $distances);
         $event = searchForValue($productID, 'productID', $events);
 
-        $club       = '-';
-        $sex        = 'kobieta';
-        $meal       = 'vege';
-        $birthDate  = '';
+        $club = '-';
+        $sex = 'kobieta';
+        $meal = 'vege';
+        $birthDate = '';
         $alarmPhone = '';
 
         if ($distance->distanceID == 6 or $distance->distanceID == 7) {
             $itemMetaData = $item->get_data()['meta_data'];
-            $sex          = searchForKeyValue('Płeć', $itemMetaData);
+            $sex = searchForKeyValue('Płeć', $itemMetaData);
             if ($sex === 'Mężczyzna' or $sex === 'Mezczyzna' or $sex === 'mężczyzna') {
                 $sex = 'mezczyzna';
             } else {
@@ -94,10 +92,23 @@ function custom_update_order($order_id)
                 $club = '-';
             }
 
-            $country   = searchForKeyValue('Kraj', $itemMetaData);
-            $city      = searchForKeyValue('Miejscowość', $itemMetaData);
+            $country = searchForKeyValue('Kraj', $itemMetaData);
+            $city = searchForKeyValue('Miejscowość', $itemMetaData);
             $firstName = searchForKeyValue('Imię dziecka', $itemMetaData);
-            $lastName  = searchForKeyValue('Nazwisko dziecka', $itemMetaData);
+            $lastName = searchForKeyValue('Nazwisko dziecka', $itemMetaData);
+
+            if (empty($firstName)) {
+                $firstName = $order->data['billing']['first_name'];
+            }
+            if (empty($lastName)) {
+                $lastName = $order->data['billing']['last_name'];
+            }
+            if (empty($city)) {
+                $city = $order->data['billing']['city'];
+            }
+            if (empty($country)) {
+                $country = $order->data['billing']['country'];
+            }
 
             foreach ($order->meta_data as $metaItem) {
                 $data = $metaItem->get_data();
@@ -105,6 +116,46 @@ function custom_update_order($order_id)
                 switch ($data['key']) {
                     case 'billing_alarm_phone':
                         $alarmPhone = $metaItem->value;
+                        break;
+                    case 'billing_birth_date':
+                        if (empty($birthDate)) {
+                            $birthDate = $metaItem->value;
+                        }
+                        break;
+                    case 'billing_sex':
+                        if (empty($sex)) {
+                            $sex = $metaItem->value;
+                            if ($sex === 'mezczyzna') {
+                                $sex = 'mezczyzna';
+                            } else {
+                                $sex = 'kobieta';
+                            }
+                        }
+                        break;
+                    case 'billing_alarm_phone':
+                        if (empty($alarmPhone)) {
+                            $alarmPhone = $metaItem->value;
+                        }
+                        break;
+                    case 'billing_meal':
+                        if (empty($meal) or $meal === 'vege') {
+                            $meal = $metaItem->value;
+                            if ($meal === 'miesny') {
+                                $meal = 'miesny';
+                            } else {
+                                $meal = 'vege';
+                            }
+                        }
+                        break;
+                    case 'billing_club':
+                        if (empty($club) or $club === '-') {
+                            $club = $metaItem->value;
+                            if (strlen(trim($club)) > 0) {
+                                $club = $club;
+                            } else {
+                                $club = '-';
+                            }
+                        }
                         break;
                 }
             }
@@ -146,31 +197,31 @@ function custom_update_order($order_id)
                 }
             }
 
-            $country   = $order->data['billing']['country'];
-            $city      = $order->data['billing']['city'];
+            $country = $order->data['billing']['country'];
+            $city = $order->data['billing']['city'];
             $firstName = $order->data['billing']['first_name'];
-            $lastName  = $order->data['billing']['last_name'];
+            $lastName = $order->data['billing']['last_name'];
         }
 
         if ($distance->distanceID > 0 and $event->eventID > 0) {
             $startingList = [
-                'orderNumber'   => $order_id,
-                'firstName'     => $firstName,
-                'surname'       => $lastName,
-                'address'       => $order->data['billing']['address_1'],
-                'city'          => $city,
-                'postcode'      => $order->data['billing']['postcode'],
-                'country'       => $country,
-                'email'         => $order->data['billing']['email'],
-                'phone'         => $order->data['billing']['phone'],
-                'birthDate'     => $birthDate,
-                'sex'           => $sex,
-                'club'          => $club,
-                'alarmPhone'    => $alarmPhone,
-                'meal'          => $meal,
+                'orderNumber' => $order_id,
+                'firstName' => $firstName,
+                'surname' => $lastName,
+                'address' => $order->data['billing']['address_1'],
+                'city' => $city,
+                'postcode' => $order->data['billing']['postcode'],
+                'country' => $country,
+                'email' => $order->data['billing']['email'],
+                'phone' => $order->data['billing']['phone'],
+                'birthDate' => $birthDate,
+                'sex' => $sex,
+                'club' => $club,
+                'alarmPhone' => $alarmPhone,
+                'meal' => $meal,
                 'paymentStatus' => $status,
-                'distanceID'    => $distance->distanceID,
-                'eventID'       => $event->eventID,
+                'distanceID' => $distance->distanceID,
+                'eventID' => $event->eventID,
             ];
 
             // Store data in the database
@@ -213,7 +264,7 @@ function searchForKeyValue($key, $array)
  */
 add_action('rest_api_init', function () {
     register_rest_route('tf/v1', '/event/lists', [
-        'methods'  => 'GET',
+        'methods' => 'GET',
         'callback' => 'get_tf_event',
     ]);
 });

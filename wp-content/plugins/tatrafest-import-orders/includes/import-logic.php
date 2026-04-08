@@ -128,6 +128,15 @@ function create_wc_order_from_starting_list($starting_list, $event, $distance, $
 
         if ($customer_id > 0) {
             $order->set_customer_id($customer_id);
+            $order->set_billing_first_name($starting_list->firstName);
+            $order->set_billing_last_name($starting_list->surname ?? '');
+            $order->set_billing_email($starting_list->email ?? '');
+            $order->set_billing_phone($starting_list->phone ?? '');
+            $order->set_billing_country($starting_list->country ?? 'PL');
+            $order->set_billing_city($starting_list->city ?? '');
+            $order->set_billing_state('');
+            $order->set_billing_postcode($starting_list->postCode ?? '');
+            $order->set_billing_address_1($starting_list->address ?? '');
         } else {
             // Set customer data directly on order if no customer ID
             $order->set_billing_first_name($starting_list->firstName);
@@ -151,7 +160,7 @@ function create_wc_order_from_starting_list($starting_list, $event, $distance, $
             if (!$fallback_product) {
                 return new WP_Error(
                     'wc_product_missing',
-                    'Nie znaleziono produktu do dodania do zamowienia (variationID/productID/fallback ID 1).'
+                    'Nie znaleziono produktu do dodania do zamowienia (variantID/productID/fallback ID 1).'
                 );
             }
 
@@ -195,16 +204,10 @@ function create_wc_order_from_starting_list($starting_list, $event, $distance, $
         // Save order
         $order->save();
 
-        // Update starting list with imported order ID
+        // Delete element from starting list with imported order ID
         global $wpdb;
         $table_starting_list = $wpdb->prefix . 'starting_list';
-        $wpdb->update(
-            $table_starting_list,
-            ['orderNumber' => $order->get_id()],
-            ['id' => $starting_list->id],
-            ['%d'],
-            ['%d']
-        );
+        $wpdb->delete($table_starting_list, ['orderNumber' => $starting_list->orderNumber]);
 
         return $order;
 
@@ -262,9 +265,9 @@ function get_distance_product($distance, $event, $event_distance)
 {
     global $wpdb;
 
-    // Highest priority: variation mapping from {$wpdb->prefix}starting_events_distances.variationID
-    if (!empty($event_distance->variationID)) {
-        $variation = wc_get_product((int) $event_distance->variationID);
+    // Highest priority: variation mapping from {$wpdb->prefix}starting_events_distances.variantID
+    if (!empty($event_distance->variantID)) {
+        $variation = wc_get_product((int) $event_distance->variantID);
         if ($variation instanceof WC_Product) {
             return $variation;
         }
@@ -323,7 +326,7 @@ function set_wc_order_meta($order, $starting_list, $event_distance)
     $order->update_meta_data('_event_id', $starting_list->eventID ?? '');
     $order->update_meta_data('_distance_id', $starting_list->distanceID ?? '');
     $order->update_meta_data('_event_distance_ordering', $event_distance->ordering ?? '');
-    $order->update_meta_data('_event_distance_variation_id', $event_distance->variationID ?? '');
+    $order->update_meta_data('_event_distance_variant_id', $event_distance->variantID ?? '');
     $order->update_meta_data('_imported_from_starting_list', '1');
     $order->update_meta_data('_import_date', current_time('mysql'));
 }

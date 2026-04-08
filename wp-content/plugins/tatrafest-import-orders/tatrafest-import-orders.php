@@ -4,7 +4,8 @@
  * Plugin URI: https://tatrafest.pl
  * Description: Importuje zamowienia z tabel starting_list, starting_events i starting_distances z prefiksem WordPressa do WooCommerce
  * Version: 1.0.0
- * Author: Tatrafest
+ * Author: AstoSoft
+ * Author URI: https://astosoft.pl
  * License: GPL-2.0+
  * Text Domain: tatrafest-import-orders
  * Domain Path: /languages

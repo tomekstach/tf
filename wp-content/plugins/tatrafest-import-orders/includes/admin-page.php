@@ -63,7 +63,7 @@ function tatrafest_import_orders_render_admin_page()
                     <li><strong><?php echo esc_html($table_starting_list); ?></strong> - glowne dane zamowienia</li>
                     <li><strong><?php echo esc_html($table_starting_events); ?></strong> - informacje o eventach</li>
                     <li><strong><?php echo esc_html($table_starting_distances); ?></strong> - slownik dystansow</li>
-                    <li><strong><?php echo esc_html($table_starting_events_distances); ?></strong> - mapowanie event-distance (ordering, variationID)</li>
+                    <li><strong><?php echo esc_html($table_starting_events_distances); ?></strong> - mapowanie event-distance (ordering, variantID)</li>
                 </ul>
                 <p>
                     Dane zostana skonwertowane i dodane do systemu WooCommerce.

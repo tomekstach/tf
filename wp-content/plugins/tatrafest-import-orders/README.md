@@ -34,4 +34,4 @@ Plugin uzywa dynamicznego prefiksu WordPressa (`$wpdb->prefix`) dla tabel:
 
 ### starting_events_distances
 
-`eventID, distanceID, ordering, variationID`
+`eventID, distanceID, ordering, variantID`

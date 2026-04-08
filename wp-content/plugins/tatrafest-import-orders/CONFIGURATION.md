@@ -58,7 +58,7 @@ Przyklad dla prefiksu `wp_`:
 - eventID
 - distanceID
 - ordering
-- variationID
+- variantID
 
 ## Sprawdzenie SQL (przyklad dla `wp_`)
 
